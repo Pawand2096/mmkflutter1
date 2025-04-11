@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';  // Import the WebView package
+import 'package:webview_flutter/webview_flutter.dart'; // Import WebView package
+
 void main() {
   runApp(const MyApp());
 }
@@ -10,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter WebView Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -21,7 +23,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
 
   @override
@@ -29,14 +30,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late WebViewController _webViewController;
+  late final WebViewController _controller;
 
   @override
   void initState() {
     super.initState();
-    // Initialize WebView plugin
-    // WebView.platform = SurfaceAndroidWebView();  // For Android-specific initialization
-    // If you're targeting Linux or iOS, this line might be unnecessary
+
+    // Initialize WebViewController for newer versions (>=4.x.x)
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse('https://app.mmkuwait.in/'));
   }
 
   @override
@@ -46,13 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: WebView(
-        initialUrl: 'https://app.mmkuwait.in/',  // Your URL
-        javascriptMode: JavascriptMode.unrestricted,  // Enable JavaScript for the WebView
-        onWebViewCreated: (WebViewController webViewController) {
-          _webViewController = webViewController;  // Store WebViewController
-        },
-      ),
+      body: WebViewWidget(controller: _controller), // Use WebViewWidget instead of WebView
     );
   }
 }
